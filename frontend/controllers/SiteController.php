@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -121,9 +122,8 @@ class SiteController extends Controller
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+                Yii::$app->getSession()->setFlash('success', 'На email ' . $user->email . ' отправлено письмо с подтверждением регистрации.');
+                return $this->goHome();
             }
         }
 
@@ -148,6 +148,18 @@ class SiteController extends Controller
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
+    }
+
+    public function actionConfirmRegistration($auth)
+    {
+        try {
+            SignupForm::confirmRegistration($auth);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+        Yii::$app->getSession()->setFlash('success', 'Поздравляем вы успешно зарегистрированы. Теперь вы можете войти');
+        return $this->redirect(Yii::$app->getUser()->loginUrl);
+
     }
 
     public function actionResetPassword($token)

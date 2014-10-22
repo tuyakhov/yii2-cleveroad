@@ -2,6 +2,7 @@
 namespace frontend\models;
 
 use common\models\User;
+use yii\base\InvalidParamException;
 use yii\base\Model;
 use Yii;
 
@@ -13,6 +14,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $password_repeat;
 
     /**
      * @inheritdoc
@@ -32,6 +34,8 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            ['password', 'compare'],
+            ['password_repeat', 'required'],
         ];
     }
 
@@ -48,10 +52,30 @@ class SignupForm extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-            $user->save();
+            if ($user->save())
+                Yii::$app->mailer->compose('registration', ['user' => $user])
+                    ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
+                    ->setTo($user->email)
+                    ->setSubject('Подтверждение регистрации ' . \Yii::$app->name)
+                    ->send();
             return $user;
         }
 
         return null;
+    }
+
+    /**
+     * Confirms registration
+     *
+     * @param string $auth auth key
+     * @return static|null
+     */
+    public static function confirmRegistration($auth)
+    {
+        $user = User::findByAuthKey($auth);
+        if (!$user)
+            throw new InvalidParamException('Не верный ключ аутентификации');
+        $user->status = User::STATUS_ACTIVE;
+        return $user->save();
     }
 }

@@ -1,9 +1,10 @@
 <?php
 return [
+    'language' => 'ru_RU',
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=yii2advanced',
+            'dsn' => 'mysql:host=localhost;dbname=cleveroad',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
