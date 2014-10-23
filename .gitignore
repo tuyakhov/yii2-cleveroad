@@ -18,8 +18,12 @@ Thumbs.db
 # composer vendor dir
 /vendor
 
+#uploaded files
+frontend/web/uploads/*
+
 # composer itself is not needed
 composer.phar
+composer.lock
 
 # Mac DS_Store Files
 .DS_Store

@@ -34,15 +34,15 @@ AppAsset::register($this);
             ]);
             $menuItems = [
                 ['label' => 'Главная', 'url' => ['/site/index']],
-                ['label' => 'О нас', 'url' => ['/site/about']],
-                ['label' => 'Контакты', 'url' => ['/site/contact']],
+                ['label' => 'Список товаров', 'url' => ['/product/list']],
             ];
             if (Yii::$app->user->isGuest) {
                 $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
                 $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
             } else {
+                $menuItems[] = ['label' => 'Мои товары', 'url' => ['/product/my-products']];
                 $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                    'label' => 'Выйти (' . Yii::$app->user->identity->username . ')',
                     'url' => ['/site/logout'],
                     'linkOptions' => ['data-method' => 'post']
                 ];
