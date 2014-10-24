@@ -5,16 +5,23 @@ use common\models\User;
 use yii\base\InvalidParamException;
 use yii\base\Model;
 use Yii;
+use yii\db\ActiveRecord;
+use yii\db\ActiveRecordInterface;
 
 /**
  * Signup form
  */
-class SignupForm extends Model
+class UserForm extends Model
 {
     public $username;
     public $email;
     public $password;
     public $password_repeat;
+
+    /**
+     * @var $_user User
+     */
+    private $_user;
 
     /**
      * @inheritdoc
@@ -32,10 +39,10 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
-            ['password', 'required'],
+            ['password', 'required', 'on' => 'signup'],
             ['password', 'string', 'min' => 6],
             ['password', 'compare'],
-            ['password_repeat', 'required'],
+            ['password_repeat', 'required', 'on' => 'signup'],
         ];
     }
 
@@ -65,6 +72,20 @@ class SignupForm extends Model
     }
 
     /**
+     * Edits user profile
+     */
+    public function editProfile()
+    {
+        $this->_user->username = $this->username;
+        $this->_user->email = $this->email;
+        if (!empty($this->password))
+            $this->_user->setPassword($this->password);
+        if ($this->validate(array_keys($this->_user->dirtyAttributes)))
+            return $this->_user->save();
+        return false;
+    }
+
+    /**
      * Confirms registration
      *
      * @param string $auth auth key
@@ -77,5 +98,21 @@ class SignupForm extends Model
             throw new InvalidParamException('Не верный ключ аутентификации');
         $user->status = User::STATUS_ACTIVE;
         return $user->save();
+    }
+
+    public function getUser()
+    {
+        return isset($this->_user) ? $this->_user : null;
+    }
+
+    public function setUser($value)
+    {
+        if ($value instanceof ActiveRecordInterface) {
+            $this->_user = $value;
+            $this->username = $this->_user->username;
+            $this->email = $this->_user->email;
+        }
+        else
+            throw new InvalidParamException('Wrong value, user variable must be instance of ActiveRecord');
     }
 }

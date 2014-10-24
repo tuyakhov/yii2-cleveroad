@@ -9,12 +9,22 @@ $params = array_merge(
 return [
     'id' => 'app-api',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        [
+            'class' => \yii\filters\ContentNegotiator::className(),
+            'formats' => [
+                'application/json' => \yii\web\Response::FORMAT_JSON,
+                'application/xml' => \yii\web\Response::FORMAT_XML,
+            ],
+        ]
+    ],
     'controllerNamespace' => 'api\controllers',
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
+            'enableSession' => false
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -33,9 +43,15 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'user'
-                ]
+                ],
+                'POST users/login' => 'user/login',
+                'PUT,PATCH users/edit' => 'user/edit-profile',
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'product'
+                ],
             ],
-        ]
+        ],
     ],
     'params' => $params,
 ];

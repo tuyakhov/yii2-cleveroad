@@ -10,6 +10,8 @@ use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\imagine\Image;
 use yii\web\UploadedFile;
 
@@ -134,9 +136,10 @@ class Product extends \yii\db\ActiveRecord
 
     public function afterValidate()
     {
-        if (!empty($this->image) && $this->image instanceof UploadedFile) {
+        if (!empty($this->image)) {
+            $this->image = ($this->image instanceof UploadedFile ? $this->image->tempName : $this->image);
             $filePath = self::getImageUploadPath();
-            Image::thumbnail($this->image->tempName, 200, 200, ImageInterface::THUMBNAIL_OUTBOUND)
+            Image::thumbnail($this->image, 200, 200, ImageInterface::THUMBNAIL_OUTBOUND)
                 ->save($filePath);
             if (file_exists($filePath)) {
                 $this->image = basename($filePath);
@@ -146,6 +149,22 @@ class Product extends \yii\db\ActiveRecord
                 $this->addError('image', 'Невозможно сохранить файл');
         }
         parent::afterValidate();
+    }
+
+    public function fields()
+    {
+        return [
+            'id' => 'id',
+            'name' => 'name',
+            'image' => 'image',
+            'price' => 'price',
+            'create_date' => function() {
+                return Yii::$app->formatter->asDate($this->created_at);
+            },
+            'owner' => function() {
+                return Html::encode($this->owner->username);
+            }
+        ];
     }
 
 

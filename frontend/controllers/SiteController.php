@@ -6,7 +6,7 @@ use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
+use frontend\models\UserForm;
 use frontend\models\ContactForm;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -119,7 +119,7 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $model = new SignupForm();
+        $model = new UserForm(['scenario' => 'signup']);
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
                 Yii::$app->getSession()->setFlash('success', 'На email ' . $user->email . ' отправлено письмо с подтверждением регистрации.');
@@ -153,7 +153,7 @@ class SiteController extends Controller
     public function actionConfirmRegistration($auth)
     {
         try {
-            SignupForm::confirmRegistration($auth);
+            UserForm::confirmRegistration($auth);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -179,5 +179,16 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    public function actionEditProfile()
+    {
+        $model = new UserForm(['user' => User::findIdentity(Yii::$app->getUser()->id)]);
+        if ($model->load(Yii::$app->request->post()) && $model->editProfile()) {
+            Yii::$app->getSession()->setFlash('success', 'Изменения успешно сохранены');
+            return $this->redirect(Yii::$app->getUser()->returnUrl);
+        }
+
+        return $this->render('editProfile', ['model' => $model]);
     }
 }

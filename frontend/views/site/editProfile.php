@@ -1,12 +1,10 @@
 <?php
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \frontend\models\SignupForm */
+/* @var $model \common\models\User */
 
-$this->title = 'Регистрация';
+$this->title = 'Редактирование профиля';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-signup">
