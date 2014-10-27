@@ -33,7 +33,7 @@ AppAsset::register($this);
                 ],
             ]);
             $menuItems = [
-                ['label' => 'Главная', 'url' => ['/site/index']],
+                ['label' => 'Angular app', 'url' => ['/site/index']],
                 ['label' => 'Список товаров', 'url' => ['/product/list']],
             ];
             if (Yii::$app->user->isGuest) {

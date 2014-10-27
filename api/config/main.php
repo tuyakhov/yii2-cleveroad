@@ -35,6 +35,13 @@ return [
                 ],
             ],
         ],
+        'request' => [
+            'class' => '\yii\web\Request',
+            'enableCookieValidation' => false,
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
@@ -45,6 +52,7 @@ return [
                     'controller' => 'user'
                 ],
                 'POST users/login' => 'user/login',
+                'OPTIONS users/login' => 'user/login',
                 'PUT,PATCH users/edit' => 'user/edit-profile',
                 [
                     'class' => 'yii\rest\UrlRule',

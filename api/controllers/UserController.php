@@ -10,6 +10,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
 use yii\web\BadRequestHttpException;
+use yii\web\ServerErrorHttpException;
 
 class UserController extends ActiveController
 {
@@ -25,6 +26,9 @@ class UserController extends ActiveController
                 'class' => 'yii\rest\ViewAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'options' => [
+                'class' => 'yii\rest\OptionsAction',
             ],
         ];
     }
@@ -47,24 +51,17 @@ class UserController extends ActiveController
     public function actionLogin()
     {
         $model = new LoginForm();
-
-        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->login()) {
-            echo \Yii::$app->user->identity->getAccessToken();
-        } else {
-            return $model;
-        }
+        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->login())
+            return \Yii::$app->user->identity->getAccessToken();
+        return $model;
     }
 
     public function actionEditProfile()
     {
         $model = new UserForm(['user' => User::findIdentity(\Yii::$app->getUser()->id)]);
-        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
-            if ($model->editProfile())
-                return ['success' => true, 'profile' => $model];
-            else
-                return $model;
-        }
-        return new BadRequestHttpException('There are no parameters given');
+        if (!$model->load(\Yii::$app->getRequest()->getBodyParams(), '') && !$model->editProfile())
+            throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
+        return $model;
     }
 }
  

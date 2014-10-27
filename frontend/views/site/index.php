@@ -1,6 +1,6 @@
 <?php
 /* @var $this yii\web\View */
-$this->title = 'My Yii Application';
+$this->title = 'Cleveroad';
 ?>
 <div class="site-index" ng-app="Cleveroad">
     <div class="row">
@@ -10,16 +10,19 @@ $this->title = 'My Yii Application';
                     Авторизация
                 </div>
                 <div class="panel-body">
-                    <div class="input-group form-group">
-                        <span class="input-group-addon">@</span>
-                        <input type="text" class="form-control" placeholder="Email" required ng-model="credentials.email">
-                    </div>
-                    <div class="input-group form-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input type="text" class="form-control" placeholder="Password" required ng-model="credentials.password">
-                    </div>
-                    <div class="form-group"><input type="checkbox" ng-model="remember"/> Remember me</div>
-                    <a class="btn btn-success" href="#" ng-click="login()"><i class="glyphicon glyphicon-log-in"></i>&nbsp;Войти</a>
+                    <form name="LoginForm">
+                        <div class="input-group form-group">
+                            <span class="input-group-addon">@</span>
+                            <input type="text" class="form-control"placeholder="Email" ng-model="credentials.email">
+                        </div>
+                        <div class="input-group form-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control"placeholder="Password" ng-model="credentials.password">
+                        </div>
+                        <div class="form-group"><input type="checkbox" ng-model="remember"/> Remember me</div>
+                        <a class="btn btn-success" href="#" ng-click="login()"><i class="glyphicon glyphicon-log-in"></i>&nbsp;Войти</a>
+                        <span class="text-danger pull-right">{{ error }}</span>
+                    </form>
                 </div>
             </div>
         </div>
