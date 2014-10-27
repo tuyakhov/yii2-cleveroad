@@ -1,20 +1,15 @@
-Yii 2 Advanced Application Template
+Yii 2 Cleveroad test application
 ===================================
-
-Yii 2 Advanced Application Template is a skeleton Yii 2 application best for
-developing complex Web applications with multiple tiers.
-
-The template includes three tiers: front end, back end, and console, each of which
-is a separate Yii application.
-
-The template is designed to work in a team development environment. It supports
-deploying the application in different environments.
-
 
 DIRECTORY STRUCTURE
 -------------------
 
 ```
+api
+    config/              contains rest api configurations
+    controllers/         contains rest api controllers
+    runtime/             contains files generated during runtime
+    web/                 contains the entry script with CORS
 common
     config/              contains shared configurations
     mail/                contains view files for e-mails
@@ -75,7 +70,7 @@ You can then install the application using the following command:
 
 ~~~
 php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta2"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced advanced
+php composer.phar create-project --prefer-dist --stability=dev tuyakhov/yii2-cleveroad cleveroad
 ~~~
 
 
@@ -90,8 +85,8 @@ the installed application. You only need to do these once for all.
 3. Apply migrations with console command `yii migrate`. This will create tables needed for the application to work.
 4. Set document roots of your Web server:
 
-- for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
-- for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
+- for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://cleveroad/`
+- for api `/path/to/yii-application/api/web/` and using the URL `http://api.cleveroad/`
 
 To login into the application, you need to first sign up, with any of your email address, username and password.
 Then, you can login into the application with same email address and password at any time.
